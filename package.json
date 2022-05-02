@@ -1,0 +1,22 @@
+{
+  "name": "gerardodr-ecommerce",
+  "version": "1.0.0",
+  "description": "ecommerce backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GerardoDR/back-commerce.git"
+  },
+  "author": "Gerardo Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GerardoDR/back-commerce/issues"
+  },
+  "homepage": "https://github.com/GerardoDR/back-commerce#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "termo",
+    "brand": "Stanley",
+    "price": 9999
+  },
+  {
+    "id": 2,
+    "name": "termo",
+    "brand": "luqstoff",
+    "price": 9998
+  }
+]
