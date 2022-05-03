@@ -11,6 +11,11 @@ productRouter.get('/', (req, res) => {
     res.json({products: products});
 });
 
+productRouter.put('/:id', (req, res) =>{
+    let update = productsContainer.updateProduct(req.params.id, req.body);
+    res.json({result: update});
+});
+
 productRouter.post('/', (req, res) => {
     let product = req.body;
 
@@ -18,7 +23,7 @@ productRouter.post('/', (req, res) => {
         product = productsContainer.save(product.name, product.brand, product.price);
         res.json({result: 'product saved', product: product});
     } else {
-        res.json({result: 'product cannot saved'});
+        res.json({result: 'product cannot be saved'});
     }
 });
 
