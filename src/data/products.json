@@ -10,5 +10,11 @@
     "name": "termo",
     "brand": "luqstoff",
     "price": 9998
+  },
+  {
+    "id": 3,
+    "name": "productoprueba1",
+    "brand": "test",
+    "price": 101
   }
 ]

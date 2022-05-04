@@ -35,40 +35,32 @@ class ProductsContainer extends Container {
         return product;
     }
 
-    deleteById (id) {
-        let products = this.getAll();
-        let newProducts = products.filter(elem => elem.id != id);
-        this.saveInFile(newProducts);
-        return id;
+    updateById (id, name, brand, price) {
+        const products = this.getAll();
+        const updatee = this.getById(id);
+        if(updatee){
+            const idx = products.findIndex(elem => elem.id === updatee.id);
+            if(name){
+                products[idx].name = name;
+            }
+            if(brand){
+                products[idx].brand = brand;
+            }
+            if(price){
+                products[idx].price = price;
+            }
+            this.saveInFile(products);
+            return products[idx]
+        } else {
+            return null
+        }
     }
 
-    updateProduct(id, body) {
-
-        if (body.name || body.brand || body.price) {
-            let products = this.getAll();
-            let product = null;
-            product = this.getById(id);
-            if(product){
-                if(body.name){
-                    product.name = body.name;
-                }
-                if(body.brand){
-                    product.brand = body.brand;
-                }
-                if(body.price){
-                    product.price = body.price;
-                }
-                console.log(product);
-                this.saveInFile(products);
-                return `Product ${product.id} updated`;
-
-            } else {
-                
-                return `Product ${id} not found`;
-            }
-        } else{
-            return `bad request: ${JSON.stringify(body)}`;
-        }
+    deleteById (id) {
+        const products = this.getAll();
+        let newProducts = products.filter(elem => elem.id != id);
+        this.saveInFile(newProducts);
+        return newProducts;
     }
 }
 
