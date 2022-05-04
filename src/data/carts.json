@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "username",
+    "products": [
+      {
+        "id": 2,
+        "name": "termo",
+        "brand": "luqstoff",
+        "price": 9998
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "username",
+    "products": []
+  }
+]
