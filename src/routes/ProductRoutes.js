@@ -14,11 +14,11 @@ productRouter.get("/", (req, res) => {
 productRouter.put("/:id", (req, res) => {
   const product = req.body;
   const id = req.params.id;
-  if (product.name || product.brand || product.price) {
+  if (product.name || product.description || product.price) {
     let result = productsContainer.updateById(
       id,
       product.name,
-      product.brand,
+      product.description,
       product.price
     );
 
@@ -39,11 +39,13 @@ productRouter.put("/:id", (req, res) => {
 productRouter.post("/", (req, res) => {
   let product = req.body;
 
-  if (product && product.name && product.brand && product.price) {
+  if (product && product.name && product.description && product.price) {
     product = productsContainer.save(
       product.name,
-      product.brand,
-      product.price
+      product.description,
+      product.thumbnail = product.thumbnail || "",
+      product.price,
+      product.stock = product.stock || 0
     );
     res.json({ result: "product saved", product: product });
   } else {
