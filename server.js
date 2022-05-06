@@ -8,6 +8,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
+app.get("*", (req, res) => {
+  res.status(404).send("Not found");
+})
 
 app.listen(8080, () => {
   console.log("Server on port https://localhost:8080");

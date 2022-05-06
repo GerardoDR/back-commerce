@@ -13,8 +13,12 @@
   },
   {
     "id": 3,
-    "name": "productoprueba1",
-    "brand": "test",
-    "price": 101
+    "name": "termotest",
+    "description": "test",
+    "code": "termotest3",
+    "timestamp": 1651806390491,
+    "thumbnail": "",
+    "price": 101,
+    "stock": 0
   }
 ]

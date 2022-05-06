@@ -1,19 +1,20 @@
 [
   {
-    "id": 1,
-    "name": "username",
+    "id": 2,
+    "timestamp": 1651805128916,
     "products": [
       {
         "id": 2,
         "name": "termo",
         "brand": "luqstoff",
         "price": 9998
+      },
+      {
+        "id": 1,
+        "name": "termo",
+        "brand": "Stanley",
+        "price": 9999
       }
     ]
-  },
-  {
-    "id": 2,
-    "name": "username",
-    "products": []
   }
 ]

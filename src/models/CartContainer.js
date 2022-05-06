@@ -7,9 +7,9 @@ class CartContainer extends Container {
     this.id = carts.length > 0 ? carts.length + 1 : 1;
   }
 
-  save(name) {
+  save() {
     let carts = this.getAll();
-    let cart = { id: this.id, name: name, products: [] };
+    let cart = { id: this.id, timestamp: Date.now(), products: [] };
     carts.push(cart);
     this.saveInFile(carts);
     this.id++;
@@ -57,8 +57,13 @@ class CartContainer extends Container {
   deleteById(id) {
     const carts = this.getAll();
     const newCarts = carts.filter((cart) => cart.id != id);
-    this.saveInFile(newCarts);
-    return newCarts;
+    
+    if (JSON.stringify(carts) !== JSON.stringify(newCarts)) {
+      this.saveInFile(newCarts);
+      return newCarts;
+    } else {
+      return null;
+    }
   }
 
   deleteProductFromCart(cartId, productId) {

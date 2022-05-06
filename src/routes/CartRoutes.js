@@ -16,8 +16,8 @@ cartRouter.get("/", (req, res) => {
 
 cartRouter.get("/:id/products", (req, res) => {
   const id = req.params.id;
-  let cart = getById(id);
-    cart = cart.cart;
+  let cart = cartContainer.getById(id);
+  cart = cart.cart;
   if (cart) {
     res.json({ cart: cart });
   } else {
@@ -26,12 +26,10 @@ cartRouter.get("/:id/products", (req, res) => {
 });
 
 cartRouter.post("/", (req, res) => {
-  let cart = req.body;
-
-  if (cart && cart.name) {
-    cart = cartContainer.save(cart.name, cart.description);
+  try {
+    let cart = cartContainer.save();
     res.json({ result: "cart saved", cartID: cart.id });
-  } else {
+  } catch {
     res.json({ result: "cart cannot be saved" });
   }
 });
@@ -42,31 +40,38 @@ cartRouter.post("/:id/products", (req, res) => {
 
   if (cartId && product) {
     let cart = cartContainer.addProductToCart(cartId, product);
-
-    res.json({ result: "product added to cart", cart: cart });
-  } else {
-    res.json({ result: "product cannot be added" });
+    if (cart) {
+      res.json({ result: "product added to cart", cart: cart });
+    } else {
+      res.json({ result: "product couldn't be added" });
+    }
   }
 });
 
 cartRouter.delete("/:id", (req, res) => {
   const id = req.params.id;
   const result = cartContainer.deleteById(id);
-  res.json({
-    result: `Cart with id: ${id} deleted`,
-    carts: result,
-  });
+  if (result){
+    res.json({
+      result: `Cart with id: ${id} deleted`,
+      carts: result,
+    })
+  } else {
+    res.json({ result: `Cart with id: ${id} not found`});
+  }
 });
 
 cartRouter.delete("/:id/productos/:id_prod", (req, res) => {
-    const id = req.params.id;
-    const idProd = req.params.id_prod;
-    const result = cartContainer.deleteProductFromCart(id, idProd)
-    if (result) {
-        res.json({ result: result });
-    } else {
-        res.send(`couldn't delete product with id: ${idProd} from cart with id: ${id}`);
-    }
+  const id = req.params.id;
+  const idProd = req.params.id_prod;
+  const result = cartContainer.deleteProductFromCart(id, idProd);
+  if (result) {
+    res.json({ result: result });
+  } else {
+    res.send(
+      `couldn't delete product with id: ${idProd} from cart with id: ${id}`
+    );
+  }
 });
 
 module.exports = cartRouter;

@@ -13,7 +13,7 @@ class ProductsContainer extends Container {
       id: this.id,
       name,
       description,
-      code: this.name + this.id,
+      code: `${name}${this.id}`,
       timestamp: Date.now(),
       thumbnail,
       price,
@@ -53,6 +53,7 @@ class ProductsContainer extends Container {
       
       if (name) {
         products[idx].name = name;
+        products[idx].code = `${name}${id}`;
       }
       if (description) {
         products[idx].description = description;
