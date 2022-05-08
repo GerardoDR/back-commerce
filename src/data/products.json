@@ -2,23 +2,11 @@
   {
     "id": 1,
     "name": "termo",
-    "brand": "Stanley",
-    "price": 9999
-  },
-  {
-    "id": 2,
-    "name": "termo",
-    "brand": "luqstoff",
-    "price": 9998
-  },
-  {
-    "id": 3,
-    "name": "termotest",
-    "description": "test",
-    "code": "termotest3",
-    "timestamp": 1651806390491,
+    "description": "Stanley",
+    "code": "termo1",
+    "timestamp": 1652043156392,
     "thumbnail": "",
-    "price": 101,
-    "stock": 0
+    "price": 9999,
+    "stock": 100
   }
 ]

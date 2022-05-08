@@ -1,19 +1,17 @@
 [
   {
-    "id": 2,
-    "timestamp": 1651805128916,
+    "id": 1,
+    "timestamp": 1652043893159,
     "products": [
-      {
-        "id": 2,
-        "name": "termo",
-        "brand": "luqstoff",
-        "price": 9998
-      },
       {
         "id": 1,
         "name": "termo",
-        "brand": "Stanley",
-        "price": 9999
+        "description": "Stanley",
+        "code": "termo1",
+        "timestamp": 1652043156392,
+        "thumbnail": "",
+        "price": 9999,
+        "stock": 100
       }
     ]
   }
