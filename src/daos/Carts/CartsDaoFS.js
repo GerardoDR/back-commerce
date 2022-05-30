@@ -1,13 +1,13 @@
-const { Container } = require("./Container");
+const { ContainerFS } = require("../../containers/ContainerFS");
 
-class CartContainer extends Container {
+class CartsDaoFS extends ContainerFS {
   constructor() {
     super("./src/data/carts.json");
     let carts = this.getAll();
     this.id = carts.length > 0 ? carts.length + 1 : 1;
   }
 
-  save() {
+  saveCart() {
     let carts = this.getAll();
     let cart = { id: this.id, timestamp: Date.now(), products: [] };
     carts.push(cart);
@@ -28,12 +28,8 @@ class CartContainer extends Container {
     let cart = null;
 
     if (carts.length > 0) {
-      let element = carts.find((elem) => elem.id == id);
-      if (element) {
-        cart = element;
-      }
+      cart = carts.find((elem) => elem.id == id);
     }
-
     return { cart, carts };
   }
 
@@ -42,10 +38,9 @@ class CartContainer extends Container {
     let cart = null;
 
     if (carts.length > 0) {
-      let element = carts.find((elem) => elem.id == cartId);
-      if (element) {
-        element.products.push(product);
-        cart = element;
+      cart = carts.find((elem) => elem.id == cartId);
+      if (cart) {
+        cart.products.push(product);
       }
 
       this.saveInFile(carts);
@@ -83,4 +78,4 @@ class CartContainer extends Container {
   }
 }
 
-module.exports = { CartContainer };
+module.exports = CartsDaoFS;

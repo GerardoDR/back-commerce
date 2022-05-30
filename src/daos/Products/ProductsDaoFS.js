@@ -1,23 +1,20 @@
-const { Container } = require("./Container");
+const { ContainerFS } = require("../../containers/ContainerFS");
 
-class ProductsContainer extends Container {
+class ProductsDaoFS extends ContainerFS {
   constructor() {
     super("./src/data/products.json");
     let products = this.getAll();
     this.id = products.length > 0 ? products.length + 1 : 1;
   }
 
-  save(name, description, thumbnail, price, stock) {
+  saveProd(obj) {
     let products = this.getAll();
     let product = {
+      ...obj,
       id: this.id,
-      name,
-      description,
-      code: `${name}${this.id}`,
+      code: obj.code || `${obj.name}${this.id}`,
       timestamp: Date.now(),
-      thumbnail,
-      price,
-      stock,
+      stock: obj.stock || 10,
     };
     products.push(product);
     this.saveInFile(products);
@@ -83,4 +80,4 @@ class ProductsContainer extends Container {
   }
 }
 
-module.exports = { ProductsContainer };
+module.exports =  ProductsDaoFS;

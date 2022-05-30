@@ -1,19 +1,22 @@
 const express = require("express");
-const { Router } = express;
-const productRouter = Router();
+const ProductsDaoFS = require("../daos/Products/ProductsDaoFS");
+const ProductsDaoMongoDb = require("../daos/Products/ProductsDaoMongoDb");
+const ProductsDaoFirebase = require("../daos/Products/ProductsDaoFirebase");
 
-const { ProductsContainer } = require("../models/ProductsContainer");
-let productsContainer = new ProductsContainer();
+const productRouter = express.Router();
 
-const userAdmin = false;
+let productsContainer = new ProductsDaoFS();
+// let productsContainer = new ProductsDaoMongoDb();
+// let productsContainer = new ProductsDaoFirebase();
 
-productRouter.get("/", (req, res) => {
-  let products = productsContainer.getAll();
+const userAdmin = true;
 
+productRouter.get("/", async (req, res) => {
+  let products = await productsContainer.getAll();
   res.json({ products: products });
 });
 
-productRouter.put("/:id", (req, res) => {
+productRouter.put("/:id", async (req, res) => {
   const product = req.body;
   const id = req.params.id;
 
@@ -25,7 +28,7 @@ productRouter.put("/:id", (req, res) => {
       product.thumbnail ||
       product.stock
     ) {
-      let result = productsContainer.updateById(
+      let result = await productsContainer.updateById(
         id,
         product.name,
         product.description,
@@ -54,18 +57,19 @@ productRouter.put("/:id", (req, res) => {
   }
 });
 
-productRouter.post("/", (req, res) => {
+productRouter.post("/", async (req, res) => {
   let product = req.body;
   if (userAdmin) {
     if (product && product.name && product.description && product.price) {
-      product = productsContainer.save(
-        product.name,
-        product.description,
-        (product.thumbnail = product.thumbnail || ""),
-        product.price,
-        (product.stock = product.stock || 0)
-      );
-      res.json({ result: "product saved", product: product });
+      let mappedProduct = {
+        ...product,
+        code: `${product.name}${productsContainer.id}`,
+        timestamp: Date.now(),
+        thumbnail: product.thumbnail || "https://via.placeholder.com/150",
+        stock: product.stock || 0,
+      };
+      await productsContainer.saveProd(mappedProduct);
+      res.json({ result: "product saved", product: mappedProduct });
     } else {
       res.json({ result: "product cannot be saved" });
     }
@@ -77,13 +81,13 @@ productRouter.post("/", (req, res) => {
   }
 });
 
-productRouter.delete("/:id", (req, res) => {
+productRouter.delete("/:id", async (req, res) => {
   const id = req.params.id;
   if (userAdmin) {
-    const result = productsContainer.deleteById(id);
+    const result = await productsContainer.deleteById(id);
     res.json({
       result: `product ${id} deleted`,
-      newArray: result,
+      response: result,
     });
   } else {
     res.json({
