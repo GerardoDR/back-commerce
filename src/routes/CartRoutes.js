@@ -2,21 +2,13 @@ const express = require("express");
 const { Router } = express;
 const cartRouter = Router();
 
-const ProductsDaoFS = require("../daos/Products/ProductsDaoFS");
 const ProductsDaoMongoDb = require("../daos/Products/ProductsDaoMongoDb");
-const ProductsDaoFirebase = require("../daos/Products/ProductsDaoFirebase");
 
-const CartsDaoFS = require("../daos/Carts/CartsDaoFS");
 const CartsDaoMongoDb = require("../daos/Carts/CartsDaoMongoDb");
-const CartsDaoFirebase = require("../daos/Carts/CartsDaoFirebase");
 
-let productsContainer = new ProductsDaoFS();
-// let productsContainer = new ProductsDaoMongoDb();
-// let productsContainer = new ProductsDaoFirebase();
+let productsContainer = new ProductsDaoMongoDb();
 
-let cartContainer = new CartsDaoFS();
-// let cartContainer = new CartsDaoMongoDb();
-// let cartContainer = new CartsDaoFirebase();
+let cartContainer = new CartsDaoMongoDb();
 
 cartRouter.get("/", async (req, res) => {
   let carts = await cartContainer.getAll();
