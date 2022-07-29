@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cartsCollection = "carts";
 
 const CartsSchema = new mongoose.Schema({
-    id: {type: Number, required: true},
+    ownerId: {type: 'string', required: true},
     timestamp: {type: Date, default: Date.now, required: true},
     products: {type: Array, required: true},
 });

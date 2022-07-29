@@ -15,7 +15,7 @@ cartRouter.get("/", async (req, res) => {
   res.json({ carts: carts });
 });
 
-cartRouter.get("/:id/products", async (req, res) => {
+/*cartRouter.get("/:id/products", async (req, res) => {
   try {
     const id = req.params.id;
     let cart = await cartContainer.getById(id);
@@ -83,5 +83,5 @@ cartRouter.delete("/:id/products/:id_prod", async (req, res) => {
     );
   }
 });
-
+*/
 module.exports = cartRouter;

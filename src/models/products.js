@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const productsCollection = "products";
 
 const ProductsSchema = new mongoose.Schema({
-    id: {type: Number, required: true},
     name: {type: String, required: true},
     description: {type: String, default: "empty description", required: true},
     code:   {type: String, default: 'test-code', required: true},

@@ -1,13 +1,9 @@
 const express = require("express");
-const ProductsDaoFS = require("../daos/Products/ProductsDaoFS");
 const ProductsDaoMongoDb = require("../daos/Products/ProductsDaoMongoDb");
-const ProductsDaoFirebase = require("../daos/Products/ProductsDaoFirebase");
 
 const productRouter = express.Router();
 
-let productsContainer = new ProductsDaoFS();
-// let productsContainer = new ProductsDaoMongoDb();
-// let productsContainer = new ProductsDaoFirebase();
+let productsContainer = new ProductsDaoMongoDb();
 
 const userAdmin = true;
 
@@ -16,47 +12,7 @@ productRouter.get("/", async (req, res) => {
   res.json({ products: products });
 });
 
-productRouter.put("/:id", async (req, res) => {
-  const product = req.body;
-  const id = req.params.id;
-
-  if (userAdmin) {
-    if (
-      product.name ||
-      product.description ||
-      product.price ||
-      product.thumbnail ||
-      product.stock
-    ) {
-      let result = await productsContainer.updateById(
-        id,
-        product.name,
-        product.description,
-        product.thumbnail,
-        product.price,
-        product.stock
-      );
-
-      if (result) {
-        res.json({ result: result });
-      } else {
-        res.json({
-          id: id,
-          result: `Product not found`,
-          returned: result,
-        });
-      }
-    } else {
-      res.json({ result: `bad request: ${JSON.stringify(product)}` });
-    }
-  } else {
-    res.json({
-      error: -1,
-      description: `route /api/products/${id} PUT method not authorized`,
-    });
-  }
-});
-
+/*
 productRouter.post("/", async (req, res) => {
   let product = req.body;
   if (userAdmin) {
@@ -96,5 +52,5 @@ productRouter.delete("/:id", async (req, res) => {
     });
   }
 });
-
+*/
 module.exports = productRouter;

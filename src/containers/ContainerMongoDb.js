@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const { MONGO_URI } = require('../config/globals')
 
 class ContainerMongoDb {
   constructor(model) {
     mongoose.connect(
-      "mongodb+srv://gerardoDR:test1@cluster0.lkxvskd.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      MONGO_URI,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -15,9 +16,16 @@ class ContainerMongoDb {
   }
 
   async getAll() {
-    return await this.model.find();
+    let resp = await this.model.find();
+    return resp;
   }
 
+  async save(obj) {
+    return await this.model.insertMany([obj])
+    
+  }
+
+/*
   async getOne(id) {
     return await this.model.findOne({ id });
   }
@@ -44,6 +52,6 @@ class ContainerMongoDb {
     } catch (error) {
       console.log(error);
     }
-  }
+  }*/
 }
 module.exports = ContainerMongoDb;
