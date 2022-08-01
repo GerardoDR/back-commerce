@@ -9,7 +9,7 @@ const userAdmin = true;
 
 productRouter.get("/", async (req, res) => {
   let products = await productsContainer.getAll();
-  res.json({ products: products });
+  res.render('products', { products: products });
 });
 
 /*

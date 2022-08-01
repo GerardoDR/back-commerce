@@ -1,13 +1,16 @@
-<form action=<%login%> method="post" class="authForm">
+<h1>INICIAR SESION</h1>
+<form action='/auth/login' method="post" class="authForm">
     <div>
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" placeholder="usuario" required>
+        <label for="email">Usuario</label>
+        <input type="email" name="email" id="email" placeholder="email" required>
     </div>
     <div>
-        <label for="password">Password</label>
-        <input type="text" name="password" id="password" placeholder="password" required>
+        <label for="password">Contraseña</label>
+        <input type="password" name="password" id="password" placeholder="password" required>
     </div>
     <button type="submit">Log in</button>
 </form>
-
-<a href=<%register%> class="btn btn-primary">Register</a>
+<% if (messages.error) { %>
+    <%= messages.error %>
+<% } %> 
+<a href='/auth/register' class="btn btn-primary">Register</a>
