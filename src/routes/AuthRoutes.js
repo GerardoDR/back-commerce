@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { authPassport } = require("../config/passport-config");
 const authRouter = Router();
+const upload = require("../utils/multer");
 
 authRouter.get("/login", checkNotAuth, async (req, res) => {
   try {
@@ -11,7 +12,7 @@ authRouter.get("/login", checkNotAuth, async (req, res) => {
 });
 
 authRouter.post(
-  "/login",
+  "/login", checkNotAuth,
   authPassport.authenticate("login", {
     failureRedirect: "/auth/login",
     failureFlash: true,
@@ -34,8 +35,7 @@ authRouter.get("/register", checkNotAuth, async (req, res) => {
 });
 
 authRouter.post(
-  "/register",
-  authPassport.authenticate("signup", {
+  "/register", upload.single('avatar'), authPassport.authenticate("signup", {
     failureRedirect: "/auth/register",
     failureFlash: true,
   }),
@@ -50,7 +50,7 @@ authRouter.post(
 
 authRouter.get("/profile", (req, res) => {
   req.isAuthenticated()
-  ? res.render("profile", { user: req.user.name })
+  ? res.render("loggedin", { user: req.user, displayPage: 'profile' })
   : res.render("index", {});
 });
 
@@ -69,7 +69,7 @@ function checkAuthentication(req, res, next) {
   if (req.isAuthenticated()) {
       next();
   } else {
-      res.redirect("/auth/login");
+      res.redirect("/");
   }
 }
 
@@ -81,4 +81,4 @@ function checkNotAuth (req, res, next) {
 }
 }
 
-module.exports = {authRouter, checkAuthentication};
+module.exports = {authRouter, checkNotAuth};

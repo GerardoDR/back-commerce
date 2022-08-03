@@ -5,7 +5,7 @@ const authPassport = require("passport");
 
 authPassport.use(
   "login",
-  new LocalStrategy({usernameField:'email'},(email, password, callback) => {
+  new LocalStrategy({ usernameField: "email" }, (email, password, callback) => {
     UserModel.findOne({ email }, (err, user) => {
       if (err) {
         return callback(err);
@@ -31,7 +31,7 @@ authPassport.use(
 authPassport.use(
   "signup",
   new LocalStrategy(
-    { usernameField:'email', passReqToCallback: true },
+    { usernameField: "email", passReqToCallback: true },
     (req, email, password, callback) => {
       UserModel.findOne({ email }, (err, user) => {
         if (err) {
@@ -41,17 +41,27 @@ authPassport.use(
 
         if (user) {
           console.log("El usuario ya existe");
-          return callback(null, false);
+          return callback(null, false, {
+            message: "El usuario ya existe",
+          });
         }
 
-        const newUser = {
+        let newUser = {};
+        let params = {
           email: email,
           password: createHash(password),
-          name: req.body.name,
-          lastname: req.body.lastname,
-          address: req.body.address,
-          age: req.body.age,
         };
+
+        for (field in req.body) {
+          if (req.body[field] === "" || false) {
+            continue;
+          }
+          newUser[field] = params[field] || req.body[field];
+        }
+        
+        if (req.file){newUser[req.file.fieldname] = '/static/avatars/'+req.file.filename};
+
+        console.log(newUser);
 
         UserModel.create(newUser, (err, userWithId) => {
           if (err) {

@@ -15,6 +15,15 @@ cartRouter.get("/", async (req, res) => {
   res.json({ carts: carts });
 });
 
+cartRouter.post("/", async (req, res) => {
+  try {
+    let cart = await cartContainer.saveCart();
+    res.json({ result: "cart saved", cartID: cart.id });
+  } catch {
+    res.json({ result: "cart cannot be saved" });
+  }
+});
+
 /*cartRouter.get("/:id/products", async (req, res) => {
   try {
     const id = req.params.id;
@@ -30,14 +39,7 @@ cartRouter.get("/", async (req, res) => {
   }
 });
 
-cartRouter.post("/", async (req, res) => {
-  try {
-    let cart = await cartContainer.saveCart();
-    res.json({ result: "cart saved", cartID: cart.id });
-  } catch {
-    res.json({ result: "cart cannot be saved" });
-  }
-});
+
 
 cartRouter.post("/:id/products", async (req, res) => {
   let cartId = req.params.id;

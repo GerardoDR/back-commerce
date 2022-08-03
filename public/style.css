@@ -1,0 +1,17 @@
+:root{
+    --spacing: 1vw;
+}
+body{
+    padding: var(--spacing);
+}
+div{
+    margin: var(--spacing) 0;
+}
+
+button{
+    margin-bottom: var(--spacing);
+}
+
+a{
+    margin-bottom: var(--spacing);
+}

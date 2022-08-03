@@ -1,6 +1,6 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-
+  <%- include ('head') %>
   <header>
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
@@ -35,16 +35,7 @@
       </div>
     </nav>
   </header>
-  <body> -->
-    <h1>Hola <%= user.name %>!</h1>
-    <img src=<%= user.avatar %> alt="avatar" class="my-3" style="height: 160px">
-    <ul>
-        <li>Nombre: <%= user.name %></li>
-        <li>Apellido: <%= user.lastname %></li>
-        <li>email: <%= user.email %></li>
-        <li>Dirección:  <%= user.address%></li>
-        <li>Edad: <%= user.age %></li>
-        <li>Teléfono movil: <%= user.phone %></li>
-    </ul>
-  <!-- </body>
-</html> -->
+  <body>
+    <%- include (displayPage) %>
+  </body>
+  </html>
