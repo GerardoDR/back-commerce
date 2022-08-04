@@ -3,8 +3,8 @@ if(process.env.NODE_ENV !== 'production'){
 }
 const express = require("express");
 const productRouter = require ('./src/routes/ProductRoutes');
-const {authRouter, checkNotAuth} = require('./src/routes/AuthRoutes');
-// const cartRouter = require ('./src/routes/CartRoutes');
+const {authRouter, checkNotAuth, checkAuthOK } = require('./src/routes/AuthRoutes');
+const cartRouter = require ('./src/routes/CartRoutes');
 const session = require('express-session');
 const flash = require('express-flash');
 // const cookieParser = require('cookie-parser');
@@ -30,14 +30,14 @@ app.set('view engine', 'ejs' );
 app.set('views', './src/views')
 
 app.use("/auth", authRouter);
-app.use("/products", productRouter);
-// app.use("/carts", cartRouter);
+app.use("/products", checkAuthOK, productRouter);
+app.use("/cart", checkAuthOK, cartRouter);
 
 app.get("/", checkNotAuth, (req, res) => {
   res.render('index', {});
 })
 app.get("*", (req, res) => {
-  res.status(404).send("Not found");
+  res.status(404).send("404 Not found :( ");
 });
 
 app.listen(8080, () => {

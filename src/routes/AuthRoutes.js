@@ -2,6 +2,8 @@ const { Router } = require("express");
 const { authPassport } = require("../config/passport-config");
 const authRouter = Router();
 const upload = require("../utils/multer");
+const {transporter, defaultMailOptions} = require("../utils/transporter");
+
 
 authRouter.get("/login", checkNotAuth, async (req, res) => {
   try {
@@ -41,6 +43,17 @@ authRouter.post(
   }),
   async (req, res) => {
     try {
+      let mailOptions = {...defaultMailOptions}
+      mailOptions.html=`
+      <h1 style="color: blue;">NUEVO USUARIO CREADO ${req.user.email}</h1>
+      <span style="color: green;">${req.user.name}</span>
+      <span style="color: green;">${req.user.lastname}</span>
+      <span style="color: green;">${req.user.address}</span>
+      <span style="color: green;">${req.user.age}</span>
+      <span style="color: green;">${req.user.avatar}</span>
+      <span style="color: green;">${req.user.phone}</span>
+      <span style="color: green;">${req.user.date.toString()}</span>`;
+      await transporter.sendMail(mailOptions)
       res.status(200).redirect('/auth/login');
     } catch (e) {
       throw new Error(e);
@@ -65,7 +78,7 @@ authRouter.post("/logout", async (req, res) => {
   }
 });
 
-function checkAuthentication(req, res, next) {
+function checkAuthOK(req, res, next) {
   if (req.isAuthenticated()) {
       next();
   } else {
@@ -81,4 +94,4 @@ function checkNotAuth (req, res, next) {
 }
 }
 
-module.exports = {authRouter, checkNotAuth};
+module.exports = {authRouter, checkNotAuth, checkAuthOK };

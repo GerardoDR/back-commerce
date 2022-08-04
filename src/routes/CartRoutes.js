@@ -5,26 +5,45 @@ const cartRouter = Router();
 const ProductsDaoMongoDb = require("../daos/Products/ProductsDaoMongoDb");
 
 const CartsDaoMongoDb = require("../daos/Carts/CartsDaoMongoDb");
+// const carts = require("../models/carts");
+// const products = require("../models/products");
 
 let productsContainer = new ProductsDaoMongoDb();
 
 let cartContainer = new CartsDaoMongoDb();
 
 cartRouter.get("/", async (req, res) => {
-  let carts = await cartContainer.getAll();
-  res.json({ carts: carts });
+  try {
+    const id = req.user._id;
+    let cart = await cartContainer.getUserCart(id)
+    console.log(cart);
+    if (cart===null) {
+      console.log('creating new cart ', id);
+      cart = await cartContainer.saveCart(id)};
+    res.render('loggedin', {cartProducts: cart.products, cartDate: cart.timestamp, user: req.user, displayPage: 'cart' })
+  } catch (e) {
+    throw new Error(e)
+  }
 });
 
 cartRouter.post("/", async (req, res) => {
   try {
-    let cart = await cartContainer.saveCart();
-    res.json({ result: "cart saved", cartID: cart.id });
-  } catch {
-    res.json({ result: "cart cannot be saved" });
+    if (!cartContainer.getUserCart(req.user._id)) {
+      let cart = await cartContainer.saveCart(req.user._id);
+      console.log(cart);
+      res.render('cart', {cartProducts: cart.products});
+    } else {
+      res.redirect("/cart");
+    }
+  } catch (e) {
+    throw new Error(e);
   }
 });
 
-/*cartRouter.get("/:id/products", async (req, res) => {
+
+
+/*
+cartRouter.get("/:id/products", async (req, res) => {
   try {
     const id = req.params.id;
     let cart = await cartContainer.getById(id);
@@ -39,7 +58,18 @@ cartRouter.post("/", async (req, res) => {
   }
 });
 
-
+cartRouter.get("/all", async (req, res) => {
+  try {
+    if (req.user.admin===true){
+      let carts = await cartContainer.getAll();
+      res.json({ carts: carts });
+    } else{
+      res.status(401).json({ error: "User is not admin" });
+    }
+  } catch (error) {
+    throw new Error(e);
+  }
+});
 
 cartRouter.post("/:id/products", async (req, res) => {
   let cartId = req.params.id;

@@ -22,13 +22,14 @@ class ContainerMongoDb {
 
   async save(obj) {
     return await this.model.insertMany([obj])
-    
+  }
+
+  async getOne(field, id) {
+    let resp = await this.model.findOne({ [field]: id });
+    return resp;
   }
 
 /*
-  async getOne(id) {
-    return await this.model.findOne({ id });
-  }
 
   async save(obj, id) {
     let objToDB = { ...obj, id };

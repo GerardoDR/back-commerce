@@ -1,0 +1,10 @@
+<h1>Tu carrito, <%= user.name %> </h1><i>fecha de modificación: <%= cartDate.toString() %></i>
+<%if (cartProducts.length === 0) { %>
+  <h2>Carrito vacío</h2>
+  <% } else { %>
+  <ul>
+    <% cartProducts.map(function (p){ return %>
+    <li><b><%= p.name %></b><span><%= p.price %></span></li>
+    <% }) %>
+  </ul>
+  <% } %>
