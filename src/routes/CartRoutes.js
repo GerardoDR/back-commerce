@@ -5,6 +5,7 @@ const ProductsDaoMongoDb = require("../daos/Products/ProductsDaoMongoDb");
 const CartsDaoMongoDb = require("../daos/Carts/CartsDaoMongoDb");
 const { sendMail, defaultMailOptions } = require("../utils/nodemailer");
 const { sendMessage, defaultTWLOptions, defaultSMSOptions } = require("../utils/twilio");
+const { logger } = require("../utils/logger");
 let productsContainer = new ProductsDaoMongoDb();
 let cartContainer = new CartsDaoMongoDb();
 
@@ -76,7 +77,7 @@ cartRouter.post("/checkout", async (req, res) => {
     await sendMessage(SMSOptions);
 
     res.status(200).json({ success: true });
-    
+
   } catch (e) {
     throw new Error(e);
   }

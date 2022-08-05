@@ -2,7 +2,7 @@
 if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config();
 }
-const { EXEC_MODE, PORT } = require("./src/config/globals");
+const { EXEC_MODE, PORT, SESSION_SECRET } = require("./src/config/globals");
 const { logger } = require("./src/utils/logger")
 const express = require("express");
 const cluster = require("cluster");
@@ -35,17 +35,12 @@ app.use(compression())
 app.use('/static', express.static(__dirname + '/public'))
 app.use(flash());
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 }));
 app.use(authPassport.initialize());
 app.use(authPassport.session());
-
-// app.use((req, res, next) => {
-//   loggerInfo.log('info', `RECEIVED REQUEST TO: ${req.url} | WITH METHOD: ${req.method}`)
-//   next();
-// });
 
 app.set('view engine', 'ejs' );
 app.set('views', './src/views')
@@ -60,6 +55,12 @@ app.get("/", checkNotAuth, (req, res) => {
 app.get("*", (req, res) => {
   res.status(404).send("404 Not found :( ");
 });
+
+app.use((req, res, next, error) => {
+  logger.error(error)
+  next();
+});
+
 
 if (cluster.isMaster) {
 
@@ -84,5 +85,5 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  workerInit(PORT)
+  workerInit()
 }
