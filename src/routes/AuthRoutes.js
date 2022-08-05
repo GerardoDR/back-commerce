@@ -2,8 +2,7 @@ const { Router } = require("express");
 const { authPassport } = require("../config/passport-config");
 const authRouter = Router();
 const upload = require("../utils/multer");
-const {transporter, defaultMailOptions} = require("../utils/transporter");
-
+const { sendMail, defaultMailOptions } = require("../utils/nodemailer");
 
 authRouter.get("/login", checkNotAuth, async (req, res) => {
   try {
@@ -14,7 +13,8 @@ authRouter.get("/login", checkNotAuth, async (req, res) => {
 });
 
 authRouter.post(
-  "/login", checkNotAuth,
+  "/login",
+  checkNotAuth,
   authPassport.authenticate("login", {
     failureRedirect: "/auth/login",
     failureFlash: true,
@@ -37,24 +37,28 @@ authRouter.get("/register", checkNotAuth, async (req, res) => {
 });
 
 authRouter.post(
-  "/register", upload.single('avatar'), authPassport.authenticate("signup", {
+  "/register",
+  upload.single("avatar"),
+  authPassport.authenticate("signup", {
     failureRedirect: "/auth/register",
     failureFlash: true,
   }),
   async (req, res) => {
     try {
-      let mailOptions = {...defaultMailOptions}
-      mailOptions.html=`
-      <h1 style="color: blue;">NUEVO USUARIO CREADO ${req.user.email}</h1>
-      <span style="color: green;">${req.user.name}</span>
-      <span style="color: green;">${req.user.lastname}</span>
-      <span style="color: green;">${req.user.address}</span>
-      <span style="color: green;">${req.user.age}</span>
-      <span style="color: green;">${req.user.avatar}</span>
-      <span style="color: green;">${req.user.phone}</span>
-      <span style="color: green;">${req.user.date.toString()}</span>`;
-      await transporter.sendMail(mailOptions)
-      res.status(200).redirect('/auth/login');
+      let mailOptions = { ...defaultMailOptions };
+      mailOptions.html = `
+      <h1 style="color: blue;">NUEVO USUARIO CREADO: ${req.user.email}</h1>
+      <ul>
+        <li style="color: green; list-style: none;">Nombre: ${req.user.name}</li>
+        <li style="color: green; list-style: none;">Apellido: ${req.user.lastname}</li>
+        <li style="color: green; list-style: none;">Dirección: ${req.user.address}</li>
+        <li style="color: green; list-style: none;">Edad: ${req.user.age}</li>
+        <li style="color: green; list-style: none;">Avatar: ${req.user.avatar}</li>
+        <li style="color: green; list-style: none;">Teléfono: ${req.user.phone}</li>
+        <li style="color: green; list-style: none;">Fecha de creación: ${req.user.date.toString()}</li>
+      </ul>`;
+      await sendMail(mailOptions);
+      res.status(200).redirect("/auth/login");
     } catch (e) {
       throw new Error(e);
     }
@@ -63,15 +67,17 @@ authRouter.post(
 
 authRouter.get("/profile", (req, res) => {
   req.isAuthenticated()
-  ? res.render("loggedin", { user: req.user, displayPage: 'profile' })
-  : res.render("index", {});
+    ? res.render("loggedin", { user: req.user, displayPage: "profile" })
+    : res.render("index", {});
 });
 
 authRouter.post("/logout", async (req, res) => {
   try {
     req.logout(async (err) => {
-      if (err) { return next(err); }
-      res.redirect('/')
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/");
     });
   } catch (e) {
     throw new Error(e);
@@ -80,18 +86,18 @@ authRouter.post("/logout", async (req, res) => {
 
 function checkAuthOK(req, res, next) {
   if (req.isAuthenticated()) {
-      next();
+    next();
   } else {
-      res.redirect("/");
+    res.redirect("/");
   }
 }
 
-function checkNotAuth (req, res, next) {
+function checkNotAuth(req, res, next) {
   if (!req.isAuthenticated()) {
     next();
-} else {
+  } else {
     res.redirect("/auth/profile");
-}
+  }
 }
 
-module.exports = {authRouter, checkNotAuth, checkAuthOK };
+module.exports = { authRouter, checkNotAuth, checkAuthOK };

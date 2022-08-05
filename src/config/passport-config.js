@@ -2,6 +2,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const { validatePass, createHash } = require("../utils/bcrypt");
 const UserModel = require("../models/usuarios");
 const authPassport = require("passport");
+const { logger } = require("../utils/logger");
 
 authPassport.use(
   "login",
@@ -35,12 +36,12 @@ authPassport.use(
     (req, email, password, callback) => {
       UserModel.findOne({ email }, (err, user) => {
         if (err) {
-          console.log("Hay un error al registrarse");
+          logger.warn("Error al registrarse");
           return callback(err);
         }
 
         if (user) {
-          console.log("El usuario ya existe");
+          logger.warn("El usuario ya existe");
           return callback(null, false, {
             message: "El usuario ya existe",
           });
@@ -58,17 +59,19 @@ authPassport.use(
           }
           newUser[field] = params[field] || req.body[field];
         }
-        
-        if (req.file){newUser[req.file.fieldname] = '/static/avatars/'+req.file.filename};
 
-        console.log(newUser);
+        if (req.file) {
+          newUser[req.file.fieldname] = "/static/avatars/" + req.file.filename;
+        }
+
+        logger.info(newUser);
 
         UserModel.create(newUser, (err, userWithId) => {
           if (err) {
-            console.log("Hay un error al registrarse");
+            logger.warn("Error al registrarse");
             return callback(err);
           }
-          console.log("Registro de usuario satisfactoria");
+          logger.info("Usuario creado");
 
           return callback(null, userWithId);
         });

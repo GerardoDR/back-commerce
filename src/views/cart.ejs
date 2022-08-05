@@ -1,10 +1,14 @@
-<h1>Tu carrito, <%= user.name %> </h1><i>fecha de modificación: <%= cartDate.toString() %></i>
-<%if (cartProducts.length === 0) { %>
-  <h2>Carrito vacío</h2>
-  <% } else { %>
-  <ul>
-    <% cartProducts.map(function (p){ return %>
-    <li><b><%= p.name %></b><span><%= p.price %></span></li>
-    <% }) %>
-  </ul>
+<div id="cartWrapper">
+  <h1>Tu carrito, <%= user.name %> </h1><i>fecha de modificación: <%= cartDate.toString() %></i>
+  <%if (cartProducts.length === 0) { %>
+    <h2>Carrito vacío</h2>
+    <% } else { %>
+    <ul>
+      <% cartProducts.map(function (p){ %>
+      <li><b><%= p.name %></b><span> $<%= p.price %></span></li>
+      <% }) %>
+    </ul>
+    <button id=<%= id %>class="btn btn-primary" type="button" onclick= "return checkout(this.id, <% user._id %>)">Solicitar estos productos</button>
   <% } %>
+</div>
+<script type="text/javascript" src="/static/js/checkout.js"></script>

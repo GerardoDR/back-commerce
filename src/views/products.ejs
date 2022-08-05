@@ -3,13 +3,15 @@
 <h2>Lista vacía</h2>
 <% } else { %>
 <ul>
-  <% products.map(function (p){ return %>
-  <li><b><%= p.name %></b><span><%= p.price %></span></li>
+  <% products.map(function (p){ %>
+  <li><b><%= p.name %></b><span> $<%= p.price %></span><p><i>Detalle: <%=p.description%></i></p></li>
+  <button id=<%=p._id%> class="btn btn-primary" type="button" onclick= "return updateCart(this.id)">AGREGAR AL CARRITO</button>
   <% }) %>
 </ul>
 <% } %>
 <br />
 <%if (admin == true) { %>
-<h2>AGREGAR PRODUCTOS</h2>
-<form action="/products" method="post"></form>
+  <button class="btn btn-primary" type="submit" onclick="return postData()">CREAR UN PRODUCTO</button>
+  <script type="text/javascript" src="/static/js/newProduct.js"></script>
 <% } %>
+<script type="text/javascript" src="/static/js/addProductToCart.js"></script>

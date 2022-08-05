@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
-const { MONGO_URI } = require('../config/globals')
+const { MONGO_URI } = require("../config/globals");
+const { logger } = require("../utils/logger");
 
 class ContainerMongoDb {
   constructor(model) {
-    mongoose.connect(
-      MONGO_URI,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    ),
-      () => console.log("Connected to MongoDB");
+    mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }),
+      () => logger.info("Connected to MongoDB");
 
     this.model = model;
   }
@@ -21,7 +19,7 @@ class ContainerMongoDb {
   }
 
   async save(obj) {
-    return await this.model.insertMany([obj])
+    return await this.model.insertMany([obj]);
   }
 
   async getOne(field, id) {
@@ -29,7 +27,11 @@ class ContainerMongoDb {
     return resp;
   }
 
-/*
+  async updateOne(query, obj, options, cb) {
+    let resp = await this.model.updateOne(query, { $set: obj }, options, cb);
+    return resp;
+  }
+  /*
 
   async save(obj, id) {
     let objToDB = { ...obj, id };

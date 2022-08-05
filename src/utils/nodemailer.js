@@ -1,7 +1,6 @@
+const {TEST_MAIL, TEST_MAIL_PWD }= require('../config/globals')
 const { createTransport } = require('nodemailer');
-
-const TEST_MAIL = process.env.TEST_MAIL || 'susanna.kulas8@ethereal.email'
-const TEST_MAIL_PWD = process.env.TEST_MAIL_PWD || 'kd92YFfQjPb5aZtQPE'
+const { logger } = require("./logger")
 
 const transporter = createTransport({
    host: 'smtp.ethereal.email',
@@ -19,4 +18,13 @@ const defaultMailOptions = {
     html: '<h1 style="color: blue;">Contenido de prueba desde <span style="color: green;">Node.js con Nodemailer</span></h1>'
 }
 
-module.exports= {transporter, defaultMailOptions}
+async function sendMail(options){
+    try {
+        const info = await transporter.sendMail(options)
+        logger.info(info)
+     } catch (error) {
+        logger.error(error)
+     }
+}
+
+module.exports= {sendMail, defaultMailOptions}
