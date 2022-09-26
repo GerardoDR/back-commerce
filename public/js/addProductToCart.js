@@ -6,8 +6,8 @@ async function updateCart(id) {
   }
        
   let bodyContent = JSON.stringify({idProduct: id});
-  
-  let response = await fetch(`${window.location.origin}/cart`, { 
+  const putURL= `${window.location.origin}/cart`
+  let response = await fetch(putURL, { 
     method: "PUT",
     body: bodyContent,
     headers: headersList

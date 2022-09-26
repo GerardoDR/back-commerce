@@ -16,10 +16,9 @@ const usersCollection = "users";
 const UsersSchema = new mongoose.Schema({
   email: { type: String, required: true, max: 100 },
   password: { type: String, required: true, max: 100 },
-  name: { type: String, default: "foo", required: true, max: 100 },
-  lastname: { type: String, default: "bar", required: true, max: 100 },
-  address: { type: String, default: "unknown", required: true, max: 100 },
-  age: { type: String, default: "unknown", required: true, max: 150 },
+  name: { type: String, default: "unnamed", required: true, max: 100 },
+  lastname: { type: String, default: "nosurname", required: true, max: 100 },
+  admin: { type: Boolean, default: false},
   avatar: {
     type: String,
     default: "http://fakeimg.pl/160?text=avatar&font=lobster",

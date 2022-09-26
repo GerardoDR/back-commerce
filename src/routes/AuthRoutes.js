@@ -51,8 +51,6 @@ authRouter.post(
       <ul>
         <li style="color: green; list-style: none;">Nombre: ${req.user.name}</li>
         <li style="color: green; list-style: none;">Apellido: ${req.user.lastname}</li>
-        <li style="color: green; list-style: none;">Dirección: ${req.user.address}</li>
-        <li style="color: green; list-style: none;">Edad: ${req.user.age}</li>
         <li style="color: green; list-style: none;">Avatar: ${req.user.avatar}</li>
         <li style="color: green; list-style: none;">Teléfono: ${req.user.phone}</li>
         <li style="color: green; list-style: none;">Fecha de creación: ${req.user.date.toString()}</li>
@@ -71,7 +69,7 @@ authRouter.get("/profile", (req, res) => {
     : res.render("index", {});
 });
 
-authRouter.post("/logout", async (req, res) => {
+authRouter.post("/logout", async (req, res, next) => {
   try {
     req.logout(async (err) => {
       if (err) {

@@ -10,8 +10,38 @@
 </ul>
 <% } %>
 <br />
-<%if (admin == true) { %>
-  <button class="btn btn-primary" type="submit" onclick="return postData()">CREAR UN PRODUCTO</button>
+<%if (user.admin === true) { %>
+  <form onsubmit="postData(this)">
+    <div>
+      <label for="name">Nombre</label>
+      <input
+        type="text"
+        name="name"
+        id="prodName"
+        placeholder="Nombre del producto"
+        required
+      />
+    </div>
+    <div>
+      <label for="price">Precio</label>
+      <input
+        type="number"
+        name="price"
+        id="price"
+        placeholder="Precio del producto"
+        required
+      />
+    </div>
+    <div>
+      <label for="description">descripción</label>
+      <input
+        name="description"
+        id="prodDescription"
+        placeholder="Descripción del producto"
+      />
+    </div>
+    <input class="btn btn-primary" type="submit" value="CREAR PRODUCTO">
+  </form>
   <script type="text/javascript" src="/static/js/newProduct.js"></script>
 <% } %>
 <script type="text/javascript" src="/static/js/addProductToCart.js"></script>

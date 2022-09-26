@@ -9,7 +9,7 @@ class CartsDaoMongoDb extends ContainerMongoDb {
 
   async getUserCart(id) {
     try {
-      let cart = await this.getOne('ownerId', id);
+      let cart = await this.model.findOne({ ownerId: id });
       return cart;
     } catch (e) {
       logger.warn("Error getting cart: " + e);
@@ -17,10 +17,27 @@ class CartsDaoMongoDb extends ContainerMongoDb {
     }
   }
 
-  async addProductToCart( id, product, options, callback ){
+  async addProductToCart(id, product) {
     let cart = await this.getUserCart(id);
     cart.products.push(product);
-    let resp = await this.updateOne({'ownerId': id}, { 'products': cart.products, 'timestamp': Date.now() }, options, callback);
+    let resp = await this.model.updateOne({ 'ownerId': id }, { 'products': cart.products, 'timestamp': Date.now() });
+    return resp;
+  }
+
+  async removeProductFromCart(id, prod_id) {
+    let cart = await this.getUserCart(id);
+    let gotOne = false;
+    const updatedProducts = cart.products.filter(p => {
+      let keeper = true;
+      if (!gotOne) {
+        if (p._id == prod_id) {
+          gotOne = true;
+          keeper = false;
+        }
+      }
+      return keeper;
+    });
+    const resp = await this.model.updateOne({ 'ownerId': id }, { 'products': updatedProducts, 'timestamp': Date.now() });
     return resp;
   }
 

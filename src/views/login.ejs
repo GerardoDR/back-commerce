@@ -1,34 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
-  <%- include ('head') %>
+<%- include ('head') %>
+
   <body>
     <h1>INICIAR SESION</h1>
     <form action="/auth/login" method="post" class="authForm">
       <div>
         <label for="email">Usuario</label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          placeholder="email"
-          required
-        />
+        <input type="email" name="email" id="email" placeholder="email" required />
       </div>
       <div>
         <label for="password">Contraseña</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="password"
-          required
-        />
+        <input type="password" name="password" id="password" placeholder="password" required />
       </div>
       <button type="submit" class="btn btn-primary">Log in</button>
     </form>
     <% if (messages.error) { %>
       <%= messages.error %>
-    <% } %> 
-    <a href="/auth/register" class="btn btn-primary">Register</a>
+        <% } %>
+          <a href="/auth/register" class="btn btn-primary">Register</a>
   </body>
+
 </html>

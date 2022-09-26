@@ -9,7 +9,7 @@ const ProductsSchema = new mongoose.Schema({
     timestamp: {type: Date, default: Date.now, required: true},
     thumbnail: {type: String, default: "https://via.placeholder.com/150", required: true},
     price: {type: Number, default: 9999999, required: true},
-    stock: {type: Number, default: 0, required: true}
+    stock: {type: Number, default: 0}
 });
 
 const products = mongoose.model(productsCollection, ProductsSchema);

@@ -1,14 +1,20 @@
 <div id="cartWrapper">
-  <h1>Tu carrito, <%= user.name %> </h1><i>fecha de modificación: <%= cartDate.toString() %></i>
-  <%if (cartProducts.length === 0) { %>
+  <h1>Tu carrito, <%= user.name %>
+  </h1><i>fecha de modificación: <%= cartDate.toString() %></i>
+  <%if (cartProducts.length===0) { %>
     <h2>Carrito vacío</h2>
     <% } else { %>
-    <ul>
-      <% cartProducts.map(function (p){ %>
-      <li><b><%= p.name %></b><span> $<%= p.price %></span></li>
-      <% }) %>
-    </ul>
-    <button id=<%= id %>class="btn btn-primary" type="button" onclick= "return checkout(this.id, <% user._id %>)">Solicitar estos productos</button>
-  <% } %>
+      <ul>
+        <% cartProducts.map(function (p){ %>
+          <li><b>
+              <%= p.name %>
+            </b><span> $<%= p.price %></span> <button id=<%=p._id %>  class="btn btn-danger btn-sm" onclick="return removeFromCart(this.id)">Quitar
+              producto</button></li>
+          <% }) %>
+      </ul>
+      <button id=<%=id %> class="btn btn-primary" type="button" onclick= "return checkout(this.id, <% user._id %>
+          )">Solicitar estos productos</button>
+    <% } %>
 </div>
 <script type="text/javascript" src="/static/js/checkout.js"></script>
+<script type="text/javascript" src="/static/js/removeProductFromCart.js"></script>

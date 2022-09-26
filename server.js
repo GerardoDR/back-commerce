@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 const { EXEC_MODE, PORT, SESSION_SECRET } = require("./src/config/globals");
@@ -6,19 +6,22 @@ const { logger } = require("./src/utils/logger")
 const express = require("express");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
-const productRouter = require ('./src/routes/ProductRoutes');
-const {authRouter, checkNotAuth, checkAuthOK } = require('./src/routes/AuthRoutes');
-const cartRouter = require ('./src/routes/CartRoutes');
+const productRouter = require('./src/routes/ProductRoutes');
+const { authRouter, checkNotAuth, checkAuthOK } = require('./src/routes/AuthRoutes');
+const cartRouter = require('./src/routes/CartRoutes');
+const io = require('./src/config/socketio');
+// const chatRouter = require('./src/routes/ChatRoutes');
 const session = require('express-session');
 const flash = require('express-flash');
-// const cookieParser = require('cookie-parser');
-const {authPassport} = require('./src/config/passport-config');
+const { authPassport } = require('./src/config/passport-config');
+const { Server: HttpServer } = require('http');
+// const { Server:IOServer } = require('socket.io');
 const compression = require('compression');
-
 const app = express();
+const httpServer = new HttpServer(app);
 
 const workerInit = () => {
-  let server = app.listen(PORT, (err) => {
+  let server = httpServer.listen(PORT, (err) => {
     if (!err)
       logger.info(
         `Servidor express escuchando en el puerto ${PORT} - PID WORKER ${process.pid}`
@@ -27,7 +30,6 @@ const workerInit = () => {
   server.on("error", (error) => logger.error(`Error en el servidor ${error}`));
 };
 
-// app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression())
@@ -41,12 +43,15 @@ app.use(session({
 app.use(authPassport.initialize());
 app.use(authPassport.session());
 
-app.set('view engine', 'ejs' );
+io(httpServer, authPassport); //io wrapper
+
+app.set('view engine', 'ejs');
 app.set('views', './src/views')
 
 app.use("/auth", authRouter);
 app.use("/products", checkAuthOK, productRouter);
 app.use("/cart", checkAuthOK, cartRouter);
+app.use("/chat", checkAuthOK, chatRouter);
 
 app.get("/", checkNotAuth, (req, res) => {
   res.render('index', {});
@@ -56,8 +61,8 @@ app.get("*", (req, res) => {
 });
 
 app.use((req, res, next, error) => {
-  logger.error(error)
-  next();
+  logger.error(req.errors);
+  logger.error(error);
 });
 
 
@@ -86,3 +91,5 @@ if (cluster.isMaster) {
 } else {
   workerInit()
 }
+
+module.exports = { app };

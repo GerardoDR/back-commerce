@@ -1,0 +1,10 @@
+<h1>CHAT</h1>
+<%if (msgs.length === 0) { %>
+<h2>No hay mensajes</h2>
+<% } else { %>
+<ul>
+  <% msgs.map(function (m){ %>
+  <li><b><%= m.email %></b><span> $<%= m.formattedDate %></span><p><i>Dijo: <%=m.content%></i></p></li>
+  <% }) %>
+</ul>
+<% } %>

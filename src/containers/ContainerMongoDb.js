@@ -3,13 +3,15 @@ const { MONGO_URI } = require("../config/globals");
 const { logger } = require("../utils/logger");
 
 class ContainerMongoDb {
+  static singleConnection;
   constructor(model) {
-    mongoose.connect(MONGO_URI, {
+    if (ContainerMongoDb.singleConnection)
+      return new ContainerMongoDb.singleConnection();
+    (this.singleConnection = mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    }),
+    })),
       () => logger.info("Connected to MongoDB");
-
     this.model = model;
   }
 
@@ -22,39 +24,16 @@ class ContainerMongoDb {
     return await this.model.insertMany([obj]);
   }
 
-  async getOne(field, id) {
-    let resp = await this.model.findOne({ [field]: id });
+  async getOne(id) {
+    console.log(id);
+    let resp = await this.model.findById(id);
     return resp;
   }
 
-  async updateOne(query, obj, options, cb) {
-    let resp = await this.model.updateOne(query, { $set: obj }, options, cb);
+  async updateOne(id, values) {
+    let resp = await this.model.findByIdAndUpdate(id, values);
     return resp;
   }
-  /*
 
-  async save(obj, id) {
-    let objToDB = { ...obj, id };
-    return await this.model.insertMany([objToDB], function (err, docs) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(docs);
-      }
-    });
-  }
-
-  async update(id, obj) {
-    return await this.model.updateOne({ id }, obj);
-  }
-
-  async deleteById(id) {
-    try {
-      let res = await this.model.deleteOne({ id });
-      return res;
-    } catch (error) {
-      console.log(error);
-    }
-  }*/
 }
 module.exports = ContainerMongoDb;
