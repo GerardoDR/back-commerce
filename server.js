@@ -78,7 +78,6 @@ io.on("connection", async (socket) => {
   session.save();
 
   try {
-    console.log(socket.id)
     const msgs = await chatController.getMessages()
     socket.emit("msgs", msgs);
   } catch (error) {

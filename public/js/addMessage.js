@@ -14,7 +14,6 @@ const addMessage = (e) => {
 
 socket.on('msgs', async (data) => {
     let listOfMessages="";
-    console.log(data);
     for (const message of data) {
         listOfMessages += `<li><b> ${message.mail} </b><span> (${message.timestamp})</span><p><i> Dijo: ${message.message}</i></p></li>`
     }
@@ -23,10 +22,6 @@ socket.on('msgs', async (data) => {
 
 socket.on("connect", () => {
     console.log(socket.id);
-});
-
-socket.on("connect_error", () => {
-    console.log('error conexion socket');
 });
 
 socket.on("disconnect", (reason) => {
