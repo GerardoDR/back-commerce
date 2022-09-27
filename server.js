@@ -1,24 +1,22 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-const { EXEC_MODE, PORT, SESSION_SECRET } = require("./src/config/globals");
+const { EXEC_MODE, PORT, SESSION_SECRET, TIEMPO_EXPIRACION } = require("./src/config/globals");
 const { logger } = require("./src/utils/logger")
 const express = require("express");
+const app = express();
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
-const productRouter = require('./src/routes/ProductRoutes');
 const { authRouter, checkNotAuth, checkAuthOK } = require('./src/routes/AuthRoutes');
+const productRouter = require('./src/routes/ProductRoutes');
 const cartRouter = require('./src/routes/CartRoutes');
-const io = require('./src/config/socketio');
-// const chatRouter = require('./src/routes/ChatRoutes');
+const chatRouter = require('./src/routes/ChatRoutes');
+const chatController = require('./src/controllers/chat')
 const session = require('express-session');
 const flash = require('express-flash');
 const { authPassport } = require('./src/config/passport-config');
-const { Server: HttpServer } = require('http');
-// const { Server:IOServer } = require('socket.io');
-const compression = require('compression');
-const app = express();
-const httpServer = new HttpServer(app);
+const httpServer = require("http").createServer(app);
+const io = require("socket.io")(httpServer, { parser: require("socket.io-msgpack-parser") });
 
 const workerInit = () => {
   let server = httpServer.listen(PORT, (err) => {
@@ -32,18 +30,24 @@ const workerInit = () => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(compression())
 app.use('/static', express.static(__dirname + '/public'))
 app.use(flash());
-app.use(session({
+
+const sessionMiddleware = session({
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-}));
+  cookie: {
+    httpOnly: false,
+    secure: false,
+    maxAge: parseInt(TIEMPO_EXPIRACION)
+  },
+})
+
+app.use(sessionMiddleware);
+
 app.use(authPassport.initialize());
 app.use(authPassport.session());
-
-io(httpServer, authPassport); //io wrapper
 
 app.set('view engine', 'ejs');
 app.set('views', './src/views')
@@ -56,13 +60,41 @@ app.use("/chat", checkAuthOK, chatRouter);
 app.get("/", checkNotAuth, (req, res) => {
   res.render('index', {});
 })
-app.get("*", (req, res) => {
-  res.status(404).send("404 Not found :( ");
+
+app.get("/auth/*", checkAuthOK, (req, res) => {
+  res.status(404).render("loggedin", { user: req.user, displayPage: 'error404' });
+});
+app.get("*", checkAuthOK, (req, res) => {
+  res.status(404).render("loggedin", { user: req.user, displayPage: 'error404' });
+});
+
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+
+io.on("connection", async (socket) => {
+  const session = socket.request.session;
+  session.connections++;
+  session.save();
+
+  try {
+    console.log(socket.id)
+    const msgs = await chatController.getMessages()
+    socket.emit("msgs", msgs);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+
+  socket.on("new-message", async (data) => {
+    await chatController.insertNewMessage(data);
+    io.sockets.emit('msgs', await chatController.getMessages());
+  });
+
 });
 
 app.use((req, res, next, error) => {
-  logger.error(req.errors);
-  logger.error(error);
+  logger.error(req || res || error);
 });
 
 
@@ -91,5 +123,3 @@ if (cluster.isMaster) {
 } else {
   workerInit()
 }
-
-module.exports = { app };

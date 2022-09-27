@@ -1,16 +1,34 @@
-const socket = io.connect();
-const msgs = document.querySelector("#msgs");
-const addMessage = (e) => {
-    const date = new Date();
-    const formattedDate = `[${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}]`;
+const socket = io();
 
+const msgs = document.querySelector("#msgs");
+
+const addMessage = (e) => {
     const newMsg = {
-        email: document.getElementById('email').value,
-        content: document.getElementById('mensaje').value,
-        formattedDate
+        mail: document.getElementById('email').innerText,
+        message: document.getElementById('content').value,
     }
-    console.log(newMsg);
+
     socket.emit('new-message', newMsg);
-    
-    return false
+    return false;
 }
+
+socket.on('msgs', async (data) => {
+    let listOfMessages="";
+    console.log(data);
+    for (const message of data) {
+        listOfMessages += `<li><b> ${message.mail} </b><span> (${message.timestamp})</span><p><i> Dijo: ${message.message}</i></p></li>`
+    }
+    msgs.innerHTML = listOfMessages;
+})
+
+socket.on("connect", () => {
+    console.log(socket.id);
+});
+
+socket.on("connect_error", () => {
+    console.log('error conexion socket');
+});
+
+socket.on("disconnect", (reason) => {
+    console.log('reason: ' + reason);
+});

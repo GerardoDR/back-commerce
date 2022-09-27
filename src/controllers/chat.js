@@ -1,23 +1,26 @@
-// const { io } = require('../config/socketio');
-// const { logger } = require("../utils/logger");
-// const srvcMsgs = require('../services/chat')
+const { logger } = require("../utils/logger");
+const srvcMsgs = require('../services/chat')
 
-// const getChatPage = (req, res) => {
+const getMessages = async () => {
+    try {
+        let msgs = await srvcMsgs.getAll();
+        return msgs;
+    } catch (error) {
+        logger.error(error);
+    };
+}
 
-//     io.on("connection", async (socket) => {
-//         try {
-//             let msgs = await srvcMsgs.getAll();
-//             socket.emit("messages", await res.render("loggedin", { msgs, user: req.user, displayPage: 'chat' }));
-//         } catch (error) {
-//             logger.error(error);
-//         };
+const insertNewMessage = async (message) => {
+    try {
+        await srvcMsgs.save(message)
+    } catch (error) {
+        logger.error(error);
+    }
+}
 
-//         socket.on("new-message", async (message) => {
-//             await srvcMsgs.save(message)
-//             let msgs = await srvcMsgs.getAll();
-//             io.sockets.emit("messages", await res.render("loggedin", { msgs, user: req.user, displayPage: 'chat' }));
-//         });
-//     });
-// }
+const chatPage = async (req, res) => {
+    const msgs = await getMessages();
+    await res.render("loggedin", { msgs, user: req.user, displayPage: 'chat' });
+}
 
-// module.exports = { getChatPage }
+module.exports = { getMessages, insertNewMessage, chatPage }

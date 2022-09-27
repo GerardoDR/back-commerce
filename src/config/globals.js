@@ -1,7 +1,7 @@
 // require('dotenv').config()
 
 module.exports = {
-  PORT: process.env.PORT || 8080,
+  PORT: process.env.PORT || 3001,
   EXEC_MODE: process.env.EXEC_MODE || 'FORK',
   MONGO_URI: process.env.MONGO_URI,
   TIEMPO_EXPIRACION: process.env.TIEMPO_EXPIRACION || 600000,

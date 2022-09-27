@@ -2,9 +2,29 @@
 <%if (msgs.length === 0) { %>
 <h2>No hay mensajes</h2>
 <% } else { %>
-<ul>
+<ul id="msgs">
   <% msgs.map(function (m){ %>
-  <li><b><%= m.email %></b><span> $<%= m.formattedDate %></span><p><i>Dijo: <%=m.content%></i></p></li>
+  <li><b><%= m.mail %></b><span> <%= m.timestamp %></span><p><i>Dijo: <%=m.message%></i></p></li>
   <% }) %>
 </ul>
 <% } %>
+
+<form onsubmit="addMessage(this)">
+  <div>
+    <span>Enviar mensaje como: </span><strong id='email'> <%= user.email %> </strong>
+  </div>
+  <div>
+    <label for="name">Mensaje</label>
+    <input
+      type="text"
+      name="content"
+      id="content"
+      placeholder="Tu mensaje"
+      required
+    />
+  </div>
+  <input class="btn btn-primary" type="submit" value="Enviar mensaje">
+</form>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.socket.io/4.5.0/socket.io.msgpack.min.js"></script>
+<script type="text/javascript" src="/static/js/addMessage.js"></script>

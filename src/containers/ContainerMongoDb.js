@@ -25,7 +25,6 @@ class ContainerMongoDb {
   }
 
   async getOne(id) {
-    console.log(id);
     let resp = await this.model.findById(id);
     return resp;
   }

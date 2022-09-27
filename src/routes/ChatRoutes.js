@@ -1,7 +1,7 @@
-// const io = require('../config/socketio');
-// const { getChatPage } = require("../controllers/chat")
+const express = require("express");
+const chatRouter = express.Router();
+const { chatPage } = require('../controllers/chat');
 
-// io.of('/chat')
+chatRouter.get('/', chatPage);
 
-
-// module.exports = chatRouter;
+module.exports = chatRouter;

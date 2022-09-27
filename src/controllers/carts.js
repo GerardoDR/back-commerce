@@ -1,5 +1,6 @@
 const srvcCarts = require("../services/carts");
 const srvcProducts = require("../services/products");
+const srvcOrders = require("../services/orders");
 const { sendMail, defaultMailOptions } = require("../utils/nodemailer");
 const { sendMessage, defaultTWLOptions, defaultSMSOptions } = require("../utils/twilio");
 const { logger } = require("../utils/logger");
@@ -55,11 +56,21 @@ const deleteFromCart = async (req, res) => {
 
 const checkoutCart = async (req, res) => {
     try {
-        let cart = await srvcCarts.getOrCreateCart(id)
+        const id = req.body.id;
+
+        const cart = await srvcCarts.getOrCreateCart(id)
+
+        const order = await srvcOrders.placeOrder({
+            ownerId: cart.ownerId,
+            products: cart.products,
+            timestamp: cart.timestamp
+        })
+
         let productList = cart.products.map(
             (p) =>
                 `<li style="color: green; list-style: none;"><b>${p.name}</b><i>codigo_producto: ${p.code} - precio: ${p.price}</i></li>`
         ).join('');
+        
         let mailOptions = { ...defaultMailOptions };
         mailOptions.subject = `Nuevo pedido de: ${req.user.name} ${req.user.lastname} (${req.user.email})`;
         mailOptions.html = `<ul>${productList}</ul>`;
@@ -77,9 +88,9 @@ const checkoutCart = async (req, res) => {
         SMSOptions.body = "Su pedido ha sido recibido y se encuentra en proceso";
 
         await sendMessage(SMSOptions);
-
+        
         res.status(200).json({ success: true });
-
+        
     } catch (e) {
         throw new Error(e);
     }
