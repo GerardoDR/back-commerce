@@ -94,7 +94,7 @@ io.on("connection", async (socket) => {
 });
 
 app.use((req, res, next, error) => {
-  logger.error(req || res || error);
+  logger.error(req.error || res.error || error);
 });
 
 
