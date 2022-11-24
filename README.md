@@ -1,6 +1,6 @@
 # MOCK UP E-COMMERCE
 
-site deployed: [ heroku app ](https://back-commerce.herokuapp.com/)
+~~site deployed: [ heroku app ]~~
 
 ## HOW TO RUN IT?
 
